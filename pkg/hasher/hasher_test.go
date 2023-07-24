@@ -5,20 +5,19 @@ import (
 	"testing"
 )
 
-func BenchmarkMain(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		benchmarkHashPassword_bcrypt(b)
-		benchmarkCheckPasswordHash_bcrypt(b)
-	}
-}
-
-// func BenchmarkMain2(b *testing.B) {
+// func BenchmarkMain_passhash(b *testing.B) {
 // 	for i := 0; i < b.N; i++ {
 // 		benchmarkHashPassword_passhash(b)
 // 		benchmarkCheckPasswordHash_passhash(b)
 // 	}
 // }
 
+func Benchmark_bcrypt(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		benchmarkHashPassword_bcrypt(b)
+		benchmarkCheckPasswordHash_bcrypt(b)
+	}
+}
 func benchmarkHashPassword_passhash(b *testing.B) {
 	pass := "password"
 	hash, err := HashPassword_passhash(pass)
