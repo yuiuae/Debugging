@@ -33,7 +33,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUserAll(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("TEST")
+	// fmt.Println("TEST")
 	if r.Method != "GET" {
 		errorlog(w, "Only GET method allowed", http.StatusBadRequest)
 		return
@@ -45,7 +45,10 @@ func GetUserAll(w http.ResponseWriter, r *http.Request) {
 
 	}
 	for key, val := range users {
-		fmt.Fprintln(w, key, "- ", val.Username, val.UserPassHash, val.UserUUID)
+		str := fmt.Sprintln(key, "!- ", val.Username, val.UserPassHash, val.UserUUID)
+		w.Write([]byte(str))
+
+		// fmt.Fprintln(w, key, "- ", val.Username, val.UserPassHash, val.UserUUID)
 	}
 
 }

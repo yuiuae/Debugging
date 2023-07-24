@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 	"net/http"
+
+	_ "net/http/pprof"
 	"os"
 
 	"github.com/yuiuae/Debugging/internal/handlers"
@@ -14,9 +16,6 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-	// fmt.Println("YUI TEST")
-	// server := chat.NewServer("/entry")
-	// go server.Listen()
 
 	http.Handle("/", middleware.MiddleLog(http.HandlerFunc(handlers.Index)))
 	http.Handle("/user", middleware.MiddleLog(http.HandlerFunc(handlers.UserCreate)))

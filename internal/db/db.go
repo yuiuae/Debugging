@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -90,7 +91,7 @@ func PassVerify(uname, upass string) (structs.UserInfo, bool, error) {
 	if err != nil {
 		return ui, false, err
 	}
-	ok := hasher.CheckPasswordHash(ui.UserPassHash, upass)
+	ok := hasher.CheckPasswordHash_bcrypt(ui.UserPassHash, upass)
 	return ui, ok, err
 }
 
@@ -135,4 +136,55 @@ func CloseTimeUpdate(uname string) (int, error) {
 	fmt.Println("time updated")
 	return http.StatusOK, nil
 
+}
+
+const countRows = 50
+
+const countRows2 = 50
+
+func GetUnreadMessages(yuname string) ([]byte, error) {
+	messages := make([]structs.MessageInfo, countRows2)
+	// messages := [countRows2]structs.MessageInfo{}
+	// messages := []structs.MessageInfo{}
+	db := openDb(conf.DriverName, conf.DataSourceName)
+	defer db.Close()
+	// querystr := fmt.Sprintf("select username, msgtext,msgtime from messages where msgtext in (select msgtext from messages where msgtext not like %s) and username in (select username from messages where username like %s) and msgtext in (select msgtext from messages where msgtext not like %s) and username in (select username from messages where username not like %s) order by msgtime desc limit %d", strconv.Quote("%This is test!!!"), strconv.Quote("%log%"), strconv.Quote("%YES YES TEST%"), strconv.Quote("%login1111%"), countRows)
+	querystr := fmt.Sprintf("select username, msgtext,msgtime from messages  order by msgtime desc limit %d", countRows)
+	rows, err := db.Query(querystr)
+	if err != nil {
+		return nil, fmt.Errorf("error - select username, msgtext,msgtime from messages, err = %v", err)
+	}
+	defer rows.Close()
+	// Loop through rows, using Scan to assign column data to struct fields.
+	// var userName, userPassHash, userUUID string
+	i := 0
+	for rows.Next() {
+		var msg structs.MessageInfo
+		if err := rows.Scan(&msg.MsgUserName, &msg.MsgText, &msg.MsgTimestamp); err != nil {
+			return nil, fmt.Errorf("error - fetch FROM messages, err = %v", err)
+		}
+		// messages = append(messages, msg)
+		// messages = append(messages, msg)
+		// messages = append(messages, msg)
+		// messages[i] = msg
+		// i++
+		// messages[i] = msg
+		// i++
+		messages[i] = msg
+		i++
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error2 - select username, msgtext,msgtime from messages, err = %v", err)
+	}
+
+	// resp := &CrResponse{uid.String(), req.UserName}
+	// err = json.NewEncoder(w).Encode(&resp) //&resp
+	// err = json.NewEncoder(w).Encode(&resp) //&resp
+	jsondata, err := json.Marshal(messages)
+	if err != nil {
+		return nil, fmt.Errorf("error - json Marshal, err = %v", err)
+	}
+	// fmt.Println(jsondata)
+
+	return jsondata, nil
 }

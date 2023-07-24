@@ -1,0 +1,11 @@
+syntax="proto3";
+option go_package = "/protocol";
+message Message{
+    string msgusername=1;
+    string msgtext=2;
+    string msgtimestamp=3;
+}
+
+message AllMessages {
+    Message mesbody=1;
+}

@@ -6,6 +6,12 @@ type UserInfo struct {
 	UserUUID     string
 }
 
+type MessageInfo struct {
+	MsgUserName  string `json:"msgusername"`
+	MsgText      string `json:"msgtext"`
+	MsgTimestamp string `json:"msgtimestamp"`
+}
+
 // type ConnInfo struct {
 // 	// ws       *websocket.Conn
 // 	Token    string

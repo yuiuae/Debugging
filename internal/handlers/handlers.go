@@ -28,14 +28,13 @@ import (
 var callperhour int = 100
 
 // token validity time (minutes)
-var tokentime = 60
+var tokentime = 60000
 
 // secret key for token
 var tokenSecretKey = "SecretYouShouldHide"
 
 // Table with users
 // var usersTable = map[string]*UserInfo1{}
-
 type ConnInfo struct {
 	WS       *websocket.Conn
 	Token    string
@@ -85,7 +84,7 @@ func UserCreate(w http.ResponseWriter, r *http.Request) {
 	// }
 
 	// Hash the password using the bcrypt algorithm
-	hashedPassword, err := hasher.HashPassword(req.Password)
+	hashedPassword, err := hasher.HashPassword_bcrypt(req.Password)
 	if err != nil {
 		errorlog(w, "Internal Server Error (hash error)", http.StatusInternalServerError)
 		return
